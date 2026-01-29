@@ -830,6 +830,76 @@
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
+    // Real trending and popular video IDs
+    const REAL_VIDEOS = {
+      trending: [
+        { id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never Gonna Give You Up', channel: 'Rick Astley', views: '1.4B views' },
+        { id: 'jNQXAC9IVRw', title: 'Me at the zoo', channel: 'jawed', views: '282M views' },
+        { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito ft. Daddy Yankee', channel: 'Luis Fonsi', views: '8.3B views' },
+        { id: '9bZkp7q19f0', title: 'PSY - GANGNAM STYLE', channel: 'officialpsy', views: '4.9B views' },
+        { id: 'OPf0YbXqDm0', title: 'Mark Ronson - Uptown Funk ft. Bruno Mars', channel: 'Mark Ronson', views: '5.2B views' },
+        { id: 'YQHsXMglC9A', title: 'Adele - Hello', channel: 'Adele', views: '3.6B views' },
+        { id: 'CevxZvSJLk8', title: 'Katy Perry - Roar', channel: 'Katy Perry', views: '3.9B views' },
+        { id: 'JGwWNGJdvx8', title: 'Ed Sheeran - Shape of You', channel: 'Ed Sheeran', views: '6.3B views' },
+        { id: 'RgKAFK5djSk', title: 'Wiz Khalifa - See You Again ft. Charlie Puth', channel: 'Wiz Khalifa', views: '6.2B views' },
+        { id: 'fRh_vgS2dFE', title: 'Justin Bieber - Sorry', channel: 'Justin Bieber', views: '3.7B views' },
+        { id: 'hT_nvWreIhg', title: 'OneRepublic - Counting Stars', channel: 'OneRepublic', views: '3.9B views' },
+        { id: 'lDK9QqIzhwk', title: 'Lindsey Stirling - Crystallize', channel: 'Lindsey Stirling', views: '275M views' },
+        { id: 'L_jWHffIx5E', title: 'Smosh - FOOD BATTLE 2006', channel: 'Smosh', views: '94M views' },
+        { id: 'M5V_IXMewl4', title: 'Charlie bit my finger', channel: 'HDCYT', views: '897M views' },
+        { id: 'uelHwf8o7_U', title: 'Eminem - Love The Way You Lie ft. Rihanna', channel: 'Eminem', views: '3.2B views' },
+        { id: '2vjPBrBU-TM', title: 'Shakira - Waka Waka (This Time for Africa)', channel: 'Shakira', views: '3.6B views' },
+        { id: 'pRpeEdMmmQ0', title: 'Shakira - Hips Don\'t Lie ft. Wyclef Jean', channel: 'Shakira', views: '1.3B views' },
+        { id: 'PT2_F-1esPk', title: 'The Weeknd - Blinding Lights', channel: 'The Weeknd', views: '4.4B views' },
+        { id: 'QH2-TGUlwu4', title: 'Nyan Cat [original]', channel: 'saraj00n', views: '198M views' },
+        { id: 'djV11Xbc914', title: 'a-ha - Take On Me', channel: 'a-ha', views: '1.7B views' }
+      ],
+      foryou: [
+        { id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never Gonna Give You Up', channel: 'Rick Astley', views: '1.4B views' },
+        { id: '9bZkp7q19f0', title: 'PSY - GANGNAM STYLE', channel: 'officialpsy', views: '4.9B views' },
+        { id: 'OPf0YbXqDm0', title: 'Mark Ronson - Uptown Funk ft. Bruno Mars', channel: 'Mark Ronson', views: '5.2B views' },
+        { id: 'YQHsXMglC9A', title: 'Adele - Hello', channel: 'Adele', views: '3.6B views' },
+        { id: 'CevxZvSJLk8', title: 'Katy Perry - Roar', channel: 'Katy Perry', views: '3.9B views' },
+        { id: 'JGwWNGJdvx8', title: 'Ed Sheeran - Shape of You', channel: 'Ed Sheeran', views: '6.3B views' },
+        { id: 'RgKAFK5djSk', title: 'Wiz Khalifa - See You Again ft. Charlie Puth', channel: 'Wiz Khalifa', views: '6.2B views' },
+        { id: 'fRh_vgS2dFE', title: 'Justin Bieber - Sorry', channel: 'Justin Bieber', views: '3.7B views' },
+        { id: 'hT_nvWreIhg', title: 'OneRepublic - Counting Stars', channel: 'OneRepublic', views: '3.9B views' },
+        { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito ft. Daddy Yankee', channel: 'Luis Fonsi', views: '8.3B views' },
+        { id: 'uelHwf8o7_U', title: 'Eminem - Love The Way You Lie ft. Rihanna', channel: 'Eminem', views: '3.2B views' },
+        { id: 'lDK9QqIzhwk', title: 'Lindsey Stirling - Crystallize', channel: 'Lindsey Stirling', views: '275M views' },
+        { id: 'PT2_F-1esPk', title: 'The Weeknd - Blinding Lights', channel: 'The Weeknd', views: '4.4B views' },
+        { id: '2vjPBrBU-TM', title: 'Shakira - Waka Waka (This Time for Africa)', channel: 'Shakira', views: '3.6B views' },
+        { id: 'pRpeEdMmmQ0', title: 'Shakira - Hips Don\'t Lie ft. Wyclef Jean', channel: 'Shakira', views: '1.3B views' },
+        { id: 'jNQXAC9IVRw', title: 'Me at the zoo', channel: 'jawed', views: '282M views' },
+        { id: 'djV11Xbc914', title: 'a-ha - Take On Me', channel: 'a-ha', views: '1.7B views' },
+        { id: 'M5V_IXMewl4', title: 'Charlie bit my finger', channel: 'HDCYT', views: '897M views' },
+        { id: 'QH2-TGUlwu4', title: 'Nyan Cat [original]', channel: 'saraj00n', views: '198M views' },
+        { id: 'L_jWHffIx5E', title: 'Smosh - FOOD BATTLE 2006', channel: 'Smosh', views: '94M views' }
+      ],
+      following: [
+        { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito ft. Daddy Yankee', channel: 'Luis Fonsi', views: '8.3B views' },
+        { id: 'JGwWNGJdvx8', title: 'Ed Sheeran - Shape of You', channel: 'Ed Sheeran', views: '6.3B views' },
+        { id: 'RgKAFK5djSk', title: 'Wiz Khalifa - See You Again ft. Charlie Puth', channel: 'Wiz Khalifa', views: '6.2B views' },
+        { id: 'OPf0YbXqDm0', title: 'Mark Ronson - Uptown Funk ft. Bruno Mars', channel: 'Mark Ronson', views: '5.2B views' },
+        { id: '9bZkp7q19f0', title: 'PSY - GANGNAM STYLE', channel: 'officialpsy', views: '4.9B views' },
+        { id: 'PT2_F-1esPk', title: 'The Weeknd - Blinding Lights', channel: 'The Weeknd', views: '4.4B views' },
+        { id: 'hT_nvWreIhg', title: 'OneRepublic - Counting Stars', channel: 'OneRepublic', views: '3.9B views' },
+        { id: 'CevxZvSJLk8', title: 'Katy Perry - Roar', channel: 'Katy Perry', views: '3.9B views' },
+        { id: 'fRh_vgS2dFE', title: 'Justin Bieber - Sorry', channel: 'Justin Bieber', views: '3.7B views' },
+        { id: 'YQHsXMglC9A', title: 'Adele - Hello', channel: 'Adele', views: '3.6B views' },
+        { id: '2vjPBrBU-TM', title: 'Shakira - Waka Waka (This Time for Africa)', channel: 'Shakira', views: '3.6B views' },
+        { id: 'uelHwf8o7_U', title: 'Eminem - Love The Way You Lie ft. Rihanna', channel: 'Eminem', views: '3.2B views' },
+        { id: 'djV11Xbc914', title: 'a-ha - Take On Me', channel: 'a-ha', views: '1.7B views' },
+        { id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never Gonna Give You Up', channel: 'Rick Astley', views: '1.4B views' },
+        { id: 'pRpeEdMmmQ0', title: 'Shakira - Hips Don\'t Lie ft. Wyclef Jean', channel: 'Shakira', views: '1.3B views' },
+        { id: 'M5V_IXMewl4', title: 'Charlie bit my finger', channel: 'HDCYT', views: '897M views' },
+        { id: 'jNQXAC9IVRw', title: 'Me at the zoo', channel: 'jawed', views: '282M views' },
+        { id: 'lDK9QqIzhwk', title: 'Lindsey Stirling - Crystallize', channel: 'Lindsey Stirling', views: '275M views' },
+        { id: 'QH2-TGUlwu4', title: 'Nyan Cat [original]', channel: 'saraj00n', views: '198M views' },
+        { id: 'L_jWHffIx5E', title: 'Smosh - FOOD BATTLE 2006', channel: 'Smosh', views: '94M views' }
+      ]
+    };
+
     // Core Application
     const App = {
       player: null,
@@ -911,6 +981,7 @@
         const videoId = this.extractVideoId(input);
         if (videoId) {
           const videoData = this.getVideoData(videoId, input);
+          document.getElementById('loading').classList.remove('active');
           this.playVideo(videoData);
           return;
         }
@@ -946,30 +1017,24 @@
       },
 
       async searchVideos(query) {
-        // Simulate API call - in production, you'd call YouTube Data API
-        const sampleVideos = this.generateSampleVideos(query);
+        // Use trending videos for search results
+        const videos = REAL_VIDEOS.trending.map(v => ({
+          ...v,
+          title: `${query} - ${v.title}`,
+          thumbnail: `https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`,
+          duration: this.getRandomDuration()
+        }));
         
         setTimeout(() => {
           document.getElementById('loading').classList.remove('active');
-          this.displayVideos(sampleVideos);
+          this.displayVideos(videos);
         }, 1000);
       },
 
-      generateSampleVideos(query) {
-        const videos = [];
-        const sampleIds = ['dQw4w9WgXcQ', 'jNQXAC9IVRw', 'yPYZpwSpKmA', 'L_jWHffIx5E'];
-        
-        for (let i = 0; i < 20; i++) {
-          videos.push({
-            id: sampleIds[i % sampleIds.length] + '_' + i,
-            title: `${query} - Sample Video ${i + 1}`,
-            channel: 'Sample Channel',
-            views: `${Math.floor(Math.random() * 1000)}K views`,
-            duration: `${Math.floor(Math.random() * 20)}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`,
-            thumbnail: `https://i.ytimg.com/vi/${sampleIds[i % sampleIds.length]}/mqdefault.jpg`
-          });
-        }
-        return videos;
+      getRandomDuration() {
+        const minutes = Math.floor(Math.random() * 15) + 1;
+        const seconds = Math.floor(Math.random() * 60);
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
       },
 
       displayVideos(videos) {
@@ -981,8 +1046,8 @@
           card.className = 'video-card';
           card.innerHTML = `
             <div class="video-thumbnail">
-              <img src="${video.thumbnail}" alt="${video.title}">
-              <div class="video-duration">${video.duration}</div>
+              <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
+              <div class="video-duration">${video.duration || this.getRandomDuration()}</div>
               <div class="download-overlay">
                 <div class="download-icon" data-video-id="${video.id}" data-action="download">
                   <i class="fa fa-download"></i>
@@ -996,7 +1061,7 @@
             </div>
           `;
           
-          // Play video when clicking the card
+          // Play video when clicking the card (but not the download overlay)
           card.addEventListener('click', (e) => {
             if (!e.target.closest('.download-overlay')) {
               this.playVideo(video);
@@ -1015,22 +1080,35 @@
       },
 
       playVideo(videoData) {
+        console.log('Playing video:', videoData);
         this.currentVideoId = videoData.id;
         this.currentVideoData = videoData;
         document.getElementById('playerContainer').classList.add('active');
         
+        const cleanVideoId = videoData.id.split('_')[0]; // Remove any suffix
+        
         if (!this.player) {
           this.player = new YT.Player('youtube-player', {
-            videoId: videoData.id.split('_')[0], // Remove the suffix if it exists
+            videoId: cleanVideoId,
             playerVars: {
               autoplay: 1,
               controls: 1,
               modestbranding: 1,
               rel: 0
+            },
+            events: {
+              'onReady': (event) => {
+                console.log('Player ready');
+                event.target.playVideo();
+              },
+              'onError': (event) => {
+                console.error('Player error:', event.data);
+                this.showToast('Error loading video. Please try another video.');
+              }
             }
           });
         } else {
-          this.player.loadVideoById(videoData.id.split('_')[0]);
+          this.player.loadVideoById(cleanVideoId);
         }
       },
 
@@ -1082,7 +1160,6 @@
       },
 
       generateDownloadOptions(video) {
-        // Generate realistic download options
         return [
           { quality: '4K • 2160p', format: 'MP4', fps: '60fps', size: '~2.5 GB', value: '2160p60' },
           { quality: '1440p', format: 'MP4', fps: '60fps', size: '~1.2 GB', value: '1440p60' },
@@ -1097,20 +1174,10 @@
       },
 
       async downloadVideo(video, option) {
-        // In production, this would call a backend API to generate download link
-        // For demo purposes, we'll simulate the download
-        
         this.closeDownloadModal();
-        this.showToast(`Downloading ${video.title} in ${option.quality}...`);
+        this.showToast(`Preparing download: ${video.title.substring(0, 40)}... in ${option.quality}`);
         
-        // Simulate download preparation
         setTimeout(() => {
-          // In production, you would:
-          // 1. Call your backend API with video ID and quality
-          // 2. Backend would use youtube-dl or similar to get the actual download URL
-          // 3. Trigger the download
-          
-          // For demo, we'll just show a message
           console.log('Download initiated:', {
             videoId: video.id,
             title: video.title,
@@ -1118,8 +1185,7 @@
             format: option.format
           });
           
-          // Note: Actual downloading would require backend service
-          this.showToast('Download feature requires backend implementation', 5000);
+          this.showToast('Note: Download requires backend service. This is a demo.', 5000);
         }, 1000);
       },
 
@@ -1151,10 +1217,16 @@
           this.performSearch();
         };
 
+        recognition.onerror = () => {
+          this.showToast('Voice search failed. Please try again.');
+        };
+
         recognition.start();
+        this.showToast('Listening...');
       },
 
       switchFeed(feed) {
+        console.log('Switching to feed:', feed);
         document.querySelectorAll('.feed-button').forEach(btn => {
           btn.classList.remove('active');
         });
@@ -1166,7 +1238,7 @@
 
       loadDefaultContent() {
         document.getElementById('feedToggle').style.display = 'flex';
-        this.loadFeedContent('foryou');
+        this.loadFeedContent('trending');
       },
 
       async loadFeedContent(feed) {
@@ -1174,15 +1246,24 @@
         document.getElementById('videoGrid').innerHTML = '';
 
         setTimeout(() => {
-          const videos = this.generateSampleVideos(feed);
+          let videos = REAL_VIDEOS[feed] || REAL_VIDEOS.trending;
+          
+          // Add thumbnails and random durations
+          videos = videos.map(v => ({
+            ...v,
+            thumbnail: `https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`,
+            duration: this.getRandomDuration()
+          }));
+          
           document.getElementById('loading').classList.remove('active');
           this.displayVideos(videos);
-        }, 1000);
+        }, 800);
       }
     };
 
     // Initialize when YouTube API is ready
     function onYouTubeIframeAPIReady() {
+      console.log('YouTube API Ready');
       App.init();
     }
 
