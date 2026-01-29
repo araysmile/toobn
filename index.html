@@ -43,6 +43,7 @@
       display: inline-flex;
       align-items: flex-end;
       text-decoration: none;
+      cursor: pointer;
     }
 
     .logo-text {
@@ -686,7 +687,7 @@
 <body>
   <!-- Header -->
   <header>
-    <a href="/" class="logo-container">
+    <a href="/" class="logo-container" onclick="App.loadDefaultContent(); return false;">
       <span class="logo-text logo-primary">too</span>
       <span class="logo-text logo-secondary">bn</span>
       <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -739,9 +740,9 @@
 
   <!-- Feed Toggle -->
   <div class="feed-toggle" id="feedToggle" style="display: none;">
-    <button class="feed-button active" data-feed="foryou">For You</button>
-    <button class="feed-button" data-feed="following">Following</button>
-    <button class="feed-button" data-feed="trending">Trending</button>
+    <button class="feed-button active" data-feed="popular">Popular</button>
+    <button class="feed-button" data-feed="music">Music</button>
+    <button class="feed-button" data-feed="gaming">Gaming</button>
   </div>
 
   <!-- Features (shown on first visit) -->
@@ -830,75 +831,9 @@
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
-    // Real trending and popular video IDs
-    const REAL_VIDEOS = {
-      trending: [
-        { id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never Gonna Give You Up', channel: 'Rick Astley', views: '1.4B views' },
-        { id: 'jNQXAC9IVRw', title: 'Me at the zoo', channel: 'jawed', views: '282M views' },
-        { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito ft. Daddy Yankee', channel: 'Luis Fonsi', views: '8.3B views' },
-        { id: '9bZkp7q19f0', title: 'PSY - GANGNAM STYLE', channel: 'officialpsy', views: '4.9B views' },
-        { id: 'OPf0YbXqDm0', title: 'Mark Ronson - Uptown Funk ft. Bruno Mars', channel: 'Mark Ronson', views: '5.2B views' },
-        { id: 'YQHsXMglC9A', title: 'Adele - Hello', channel: 'Adele', views: '3.6B views' },
-        { id: 'CevxZvSJLk8', title: 'Katy Perry - Roar', channel: 'Katy Perry', views: '3.9B views' },
-        { id: 'JGwWNGJdvx8', title: 'Ed Sheeran - Shape of You', channel: 'Ed Sheeran', views: '6.3B views' },
-        { id: 'RgKAFK5djSk', title: 'Wiz Khalifa - See You Again ft. Charlie Puth', channel: 'Wiz Khalifa', views: '6.2B views' },
-        { id: 'fRh_vgS2dFE', title: 'Justin Bieber - Sorry', channel: 'Justin Bieber', views: '3.7B views' },
-        { id: 'hT_nvWreIhg', title: 'OneRepublic - Counting Stars', channel: 'OneRepublic', views: '3.9B views' },
-        { id: 'lDK9QqIzhwk', title: 'Lindsey Stirling - Crystallize', channel: 'Lindsey Stirling', views: '275M views' },
-        { id: 'L_jWHffIx5E', title: 'Smosh - FOOD BATTLE 2006', channel: 'Smosh', views: '94M views' },
-        { id: 'M5V_IXMewl4', title: 'Charlie bit my finger', channel: 'HDCYT', views: '897M views' },
-        { id: 'uelHwf8o7_U', title: 'Eminem - Love The Way You Lie ft. Rihanna', channel: 'Eminem', views: '3.2B views' },
-        { id: '2vjPBrBU-TM', title: 'Shakira - Waka Waka (This Time for Africa)', channel: 'Shakira', views: '3.6B views' },
-        { id: 'pRpeEdMmmQ0', title: 'Shakira - Hips Don\'t Lie ft. Wyclef Jean', channel: 'Shakira', views: '1.3B views' },
-        { id: 'PT2_F-1esPk', title: 'The Weeknd - Blinding Lights', channel: 'The Weeknd', views: '4.4B views' },
-        { id: 'QH2-TGUlwu4', title: 'Nyan Cat [original]', channel: 'saraj00n', views: '198M views' },
-        { id: 'djV11Xbc914', title: 'a-ha - Take On Me', channel: 'a-ha', views: '1.7B views' }
-      ],
-      foryou: [
-        { id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never Gonna Give You Up', channel: 'Rick Astley', views: '1.4B views' },
-        { id: '9bZkp7q19f0', title: 'PSY - GANGNAM STYLE', channel: 'officialpsy', views: '4.9B views' },
-        { id: 'OPf0YbXqDm0', title: 'Mark Ronson - Uptown Funk ft. Bruno Mars', channel: 'Mark Ronson', views: '5.2B views' },
-        { id: 'YQHsXMglC9A', title: 'Adele - Hello', channel: 'Adele', views: '3.6B views' },
-        { id: 'CevxZvSJLk8', title: 'Katy Perry - Roar', channel: 'Katy Perry', views: '3.9B views' },
-        { id: 'JGwWNGJdvx8', title: 'Ed Sheeran - Shape of You', channel: 'Ed Sheeran', views: '6.3B views' },
-        { id: 'RgKAFK5djSk', title: 'Wiz Khalifa - See You Again ft. Charlie Puth', channel: 'Wiz Khalifa', views: '6.2B views' },
-        { id: 'fRh_vgS2dFE', title: 'Justin Bieber - Sorry', channel: 'Justin Bieber', views: '3.7B views' },
-        { id: 'hT_nvWreIhg', title: 'OneRepublic - Counting Stars', channel: 'OneRepublic', views: '3.9B views' },
-        { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito ft. Daddy Yankee', channel: 'Luis Fonsi', views: '8.3B views' },
-        { id: 'uelHwf8o7_U', title: 'Eminem - Love The Way You Lie ft. Rihanna', channel: 'Eminem', views: '3.2B views' },
-        { id: 'lDK9QqIzhwk', title: 'Lindsey Stirling - Crystallize', channel: 'Lindsey Stirling', views: '275M views' },
-        { id: 'PT2_F-1esPk', title: 'The Weeknd - Blinding Lights', channel: 'The Weeknd', views: '4.4B views' },
-        { id: '2vjPBrBU-TM', title: 'Shakira - Waka Waka (This Time for Africa)', channel: 'Shakira', views: '3.6B views' },
-        { id: 'pRpeEdMmmQ0', title: 'Shakira - Hips Don\'t Lie ft. Wyclef Jean', channel: 'Shakira', views: '1.3B views' },
-        { id: 'jNQXAC9IVRw', title: 'Me at the zoo', channel: 'jawed', views: '282M views' },
-        { id: 'djV11Xbc914', title: 'a-ha - Take On Me', channel: 'a-ha', views: '1.7B views' },
-        { id: 'M5V_IXMewl4', title: 'Charlie bit my finger', channel: 'HDCYT', views: '897M views' },
-        { id: 'QH2-TGUlwu4', title: 'Nyan Cat [original]', channel: 'saraj00n', views: '198M views' },
-        { id: 'L_jWHffIx5E', title: 'Smosh - FOOD BATTLE 2006', channel: 'Smosh', views: '94M views' }
-      ],
-      following: [
-        { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito ft. Daddy Yankee', channel: 'Luis Fonsi', views: '8.3B views' },
-        { id: 'JGwWNGJdvx8', title: 'Ed Sheeran - Shape of You', channel: 'Ed Sheeran', views: '6.3B views' },
-        { id: 'RgKAFK5djSk', title: 'Wiz Khalifa - See You Again ft. Charlie Puth', channel: 'Wiz Khalifa', views: '6.2B views' },
-        { id: 'OPf0YbXqDm0', title: 'Mark Ronson - Uptown Funk ft. Bruno Mars', channel: 'Mark Ronson', views: '5.2B views' },
-        { id: '9bZkp7q19f0', title: 'PSY - GANGNAM STYLE', channel: 'officialpsy', views: '4.9B views' },
-        { id: 'PT2_F-1esPk', title: 'The Weeknd - Blinding Lights', channel: 'The Weeknd', views: '4.4B views' },
-        { id: 'hT_nvWreIhg', title: 'OneRepublic - Counting Stars', channel: 'OneRepublic', views: '3.9B views' },
-        { id: 'CevxZvSJLk8', title: 'Katy Perry - Roar', channel: 'Katy Perry', views: '3.9B views' },
-        { id: 'fRh_vgS2dFE', title: 'Justin Bieber - Sorry', channel: 'Justin Bieber', views: '3.7B views' },
-        { id: 'YQHsXMglC9A', title: 'Adele - Hello', channel: 'Adele', views: '3.6B views' },
-        { id: '2vjPBrBU-TM', title: 'Shakira - Waka Waka (This Time for Africa)', channel: 'Shakira', views: '3.6B views' },
-        { id: 'uelHwf8o7_U', title: 'Eminem - Love The Way You Lie ft. Rihanna', channel: 'Eminem', views: '3.2B views' },
-        { id: 'djV11Xbc914', title: 'a-ha - Take On Me', channel: 'a-ha', views: '1.7B views' },
-        { id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never Gonna Give You Up', channel: 'Rick Astley', views: '1.4B views' },
-        { id: 'pRpeEdMmmQ0', title: 'Shakira - Hips Don\'t Lie ft. Wyclef Jean', channel: 'Shakira', views: '1.3B views' },
-        { id: 'M5V_IXMewl4', title: 'Charlie bit my finger', channel: 'HDCYT', views: '897M views' },
-        { id: 'jNQXAC9IVRw', title: 'Me at the zoo', channel: 'jawed', views: '282M views' },
-        { id: 'lDK9QqIzhwk', title: 'Lindsey Stirling - Crystallize', channel: 'Lindsey Stirling', views: '275M views' },
-        { id: 'QH2-TGUlwu4', title: 'Nyan Cat [original]', channel: 'saraj00n', views: '198M views' },
-        { id: 'L_jWHffIx5E', title: 'Smosh - FOOD BATTLE 2006', channel: 'Smosh', views: '94M views' }
-      ]
-    };
+    // YouTube Data API Configuration
+    const YOUTUBE_API_KEY = 'AIzaSyDummyKeyForDemo123456789'; // You'll need to get a real API key
+    const API_BASE = 'https://www.googleapis.com/youtube/v3';
 
     // Core Application
     const App = {
@@ -906,11 +841,34 @@
       currentVideoId: null,
       currentVideoData: null,
       searchQuery: '',
+      apiKey: null,
       
       init() {
         this.bindEvents();
         this.checkFirstVisit();
         this.loadDefaultContent();
+        this.showApiKeyPrompt();
+      },
+
+      showApiKeyPrompt() {
+        // Check if user has saved an API key
+        const savedKey = localStorage.getItem('youtube_api_key');
+        if (savedKey) {
+          this.apiKey = savedKey;
+        } else {
+          // Show helpful message
+          setTimeout(() => {
+            if (!this.apiKey) {
+              this.showToast('For full search functionality, add your YouTube API key in console: App.setApiKey("YOUR_KEY")', 10000);
+            }
+          }, 3000);
+        }
+      },
+
+      setApiKey(key) {
+        this.apiKey = key;
+        localStorage.setItem('youtube_api_key', key);
+        this.showToast('API key saved! Search now works.', 3000);
       },
 
       bindEvents() {
@@ -980,19 +938,18 @@
         // Check if it's a video URL
         const videoId = this.extractVideoId(input);
         if (videoId) {
-          const videoData = this.getVideoData(videoId, input);
           document.getElementById('loading').classList.remove('active');
+          const videoData = await this.getVideoDetails(videoId);
           this.playVideo(videoData);
           return;
         }
 
         // Search for videos
         this.searchQuery = input;
-        await this.searchVideos(input);
+        await this.searchYouTube(input);
       },
 
       extractVideoId(input) {
-        // YouTube URL patterns
         const patterns = [
           /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
           /^([a-zA-Z0-9_-]{11})$/
@@ -1005,36 +962,138 @@
         return null;
       },
 
-      getVideoData(videoId, title = 'Unknown Video') {
+      async getVideoDetails(videoId) {
+        if (this.apiKey) {
+          try {
+            const response = await fetch(
+              `${API_BASE}/videos?part=snippet,contentDetails,statistics&id=${videoId}&key=${this.apiKey}`
+            );
+            const data = await response.json();
+            
+            if (data.items && data.items.length > 0) {
+              const video = data.items[0];
+              return this.formatVideoData(video);
+            }
+          } catch (error) {
+            console.error('Error fetching video details:', error);
+          }
+        }
+
+        // Fallback
         return {
           id: videoId,
-          title: title,
-          channel: 'YouTube Channel',
-          views: '1M views',
-          duration: '10:23',
+          title: 'YouTube Video',
+          channel: 'Unknown Channel',
+          views: 'N/A',
+          duration: 'N/A',
           thumbnail: `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`
         };
       },
 
-      async searchVideos(query) {
-        // Use trending videos for search results
-        const videos = REAL_VIDEOS.trending.map(v => ({
-          ...v,
-          title: `${query} - ${v.title}`,
-          thumbnail: `https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`,
-          duration: this.getRandomDuration()
-        }));
-        
-        setTimeout(() => {
-          document.getElementById('loading').classList.remove('active');
-          this.displayVideos(videos);
-        }, 1000);
+      async searchYouTube(query) {
+        if (!this.apiKey) {
+          // Fallback to popular videos if no API key
+          this.showToast('Using default videos. Add API key for real search.', 5000);
+          await this.loadPopularVideos();
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=20&key=${this.apiKey}`
+          );
+          const data = await response.json();
+          
+          if (data.items) {
+            const videos = data.items.map(item => ({
+              id: item.id.videoId,
+              title: item.snippet.title,
+              channel: item.snippet.channelTitle,
+              thumbnail: item.snippet.thumbnails.medium.url,
+              publishedAt: item.snippet.publishedAt
+            }));
+            
+            // Get additional details for each video
+            const videoIds = videos.map(v => v.id).join(',');
+            const detailsResponse = await fetch(
+              `${API_BASE}/videos?part=contentDetails,statistics&id=${videoIds}&key=${this.apiKey}`
+            );
+            const detailsData = await detailsResponse.json();
+            
+            // Merge details with videos
+            videos.forEach((video, index) => {
+              if (detailsData.items[index]) {
+                video.duration = this.formatDuration(detailsData.items[index].contentDetails.duration);
+                video.views = this.formatViews(detailsData.items[index].statistics.viewCount);
+              }
+            });
+            
+            document.getElementById('loading').classList.remove('active');
+            this.displayVideos(videos);
+          } else {
+            throw new Error('No results');
+          }
+        } catch (error) {
+          console.error('Search error:', error);
+          this.showToast('Search failed. Using default videos.', 3000);
+          await this.loadPopularVideos();
+        }
       },
 
-      getRandomDuration() {
-        const minutes = Math.floor(Math.random() * 15) + 1;
-        const seconds = Math.floor(Math.random() * 60);
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      formatVideoData(video) {
+        return {
+          id: video.id,
+          title: video.snippet.title,
+          channel: video.snippet.channelTitle,
+          views: this.formatViews(video.statistics.viewCount),
+          duration: this.formatDuration(video.contentDetails.duration),
+          thumbnail: video.snippet.thumbnails.medium.url
+        };
+      },
+
+      formatDuration(duration) {
+        const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+        const hours = (match[1] || '').replace('H', '');
+        const minutes = (match[2] || '').replace('M', '');
+        const seconds = (match[3] || '').replace('S', '');
+        
+        let formatted = '';
+        if (hours) formatted += hours + ':';
+        formatted += (minutes || '0').padStart(2, '0') + ':';
+        formatted += (seconds || '0').padStart(2, '0');
+        
+        return formatted;
+      },
+
+      formatViews(views) {
+        const num = parseInt(views);
+        if (num >= 1000000000) return (num / 1000000000).toFixed(1) + 'B views';
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M views';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K views';
+        return num + ' views';
+      },
+
+      async loadPopularVideos() {
+        // Fallback popular video IDs
+        const popularIds = [
+          'dQw4w9WgXcQ', 'jNQXAC9IVRw', 'kJQP7kiw5Fk', '9bZkp7q19f0',
+          'OPf0YbXqDm0', 'YQHsXMglC9A', 'CevxZvSJLk8', 'JGwWNGJdvx8',
+          'RgKAFK5djSk', 'fRh_vgS2dFE', 'hT_nvWreIhg', 'lDK9QqIzhwk',
+          'PT2_F-1esPk', '2vjPBrBU-TM', 'pRpeEdMmmQ0', 'uelHwf8o7_U',
+          'djV11Xbc914', 'M5V_IXMewl4', 'QH2-TGUlwu4', 'L_jWHffIx5E'
+        ];
+
+        const videos = popularIds.map(id => ({
+          id: id,
+          title: 'Popular Video',
+          channel: 'YouTube Channel',
+          views: '1M+ views',
+          duration: '3:45',
+          thumbnail: `https://i.ytimg.com/vi/${id}/mqdefault.jpg`
+        }));
+
+        document.getElementById('loading').classList.remove('active');
+        this.displayVideos(videos);
       },
 
       displayVideos(videos) {
@@ -1046,8 +1105,8 @@
           card.className = 'video-card';
           card.innerHTML = `
             <div class="video-thumbnail">
-              <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
-              <div class="video-duration">${video.duration || this.getRandomDuration()}</div>
+              <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/320x180/1a1a1a/4285F4?text=Video'">
+              <div class="video-duration">${video.duration || '0:00'}</div>
               <div class="download-overlay">
                 <div class="download-icon" data-video-id="${video.id}" data-action="download">
                   <i class="fa fa-download"></i>
@@ -1057,18 +1116,16 @@
             <div class="video-info">
               <div class="video-title">${video.title}</div>
               <div class="video-channel">${video.channel}</div>
-              <div class="video-stats">${video.views}</div>
+              <div class="video-stats">${video.views || 'N/A'}</div>
             </div>
           `;
           
-          // Play video when clicking the card (but not the download overlay)
           card.addEventListener('click', (e) => {
             if (!e.target.closest('.download-overlay')) {
               this.playVideo(video);
             }
           });
           
-          // Download when clicking the download icon
           const downloadIcon = card.querySelector('[data-action="download"]');
           downloadIcon.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1085,7 +1142,7 @@
         this.currentVideoData = videoData;
         document.getElementById('playerContainer').classList.add('active');
         
-        const cleanVideoId = videoData.id.split('_')[0]; // Remove any suffix
+        const cleanVideoId = videoData.id.split('_')[0];
         
         if (!this.player) {
           this.player = new YT.Player('youtube-player', {
@@ -1122,11 +1179,9 @@
       openDownloadModal(video) {
         this.currentVideoData = video;
         
-        // Set video info
         document.getElementById('downloadVideoTitle').textContent = video.title;
         document.getElementById('downloadVideoChannel').textContent = video.channel;
         
-        // Generate download options
         const options = this.generateDownloadOptions(video);
         const optionsContainer = document.getElementById('downloadOptions');
         optionsContainer.innerHTML = '';
@@ -1175,17 +1230,14 @@
 
       async downloadVideo(video, option) {
         this.closeDownloadModal();
-        this.showToast(`Preparing download: ${video.title.substring(0, 40)}... in ${option.quality}`);
+        this.showToast(`Opening download link for: ${video.title.substring(0, 30)}...`);
+        
+        // Use a free download service (y2mate style)
+        const downloadUrl = `https://www.y2mate.com/youtube/${video.id}`;
+        window.open(downloadUrl, '_blank');
         
         setTimeout(() => {
-          console.log('Download initiated:', {
-            videoId: video.id,
-            title: video.title,
-            quality: option.quality,
-            format: option.format
-          });
-          
-          this.showToast('Note: Download requires backend service. This is a demo.', 5000);
+          this.showToast('Redirected to download service. Choose your quality there.', 5000);
         }, 1000);
       },
 
@@ -1237,27 +1289,16 @@
       },
 
       loadDefaultContent() {
+        document.getElementById('features').style.display = 'none';
         document.getElementById('feedToggle').style.display = 'flex';
-        this.loadFeedContent('trending');
+        this.loadPopularVideos();
       },
 
       async loadFeedContent(feed) {
         document.getElementById('loading').classList.add('active');
         document.getElementById('videoGrid').innerHTML = '';
 
-        setTimeout(() => {
-          let videos = REAL_VIDEOS[feed] || REAL_VIDEOS.trending;
-          
-          // Add thumbnails and random durations
-          videos = videos.map(v => ({
-            ...v,
-            thumbnail: `https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`,
-            duration: this.getRandomDuration()
-          }));
-          
-          document.getElementById('loading').classList.remove('active');
-          this.displayVideos(videos);
-        }, 800);
+        await this.loadPopularVideos();
       }
     };
 
@@ -1271,6 +1312,9 @@
     if (window.YT && YT.Player) {
       App.init();
     }
+
+    // Make App globally accessible for API key setup
+    window.App = App;
   </script>
 </body>
 </html>
