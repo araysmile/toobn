@@ -501,6 +501,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      text-decoration: none;
+      color: inherit;
     }
 
     .download-option:hover {
@@ -832,7 +834,6 @@
 
   <script>
     // YouTube Data API Configuration
-    const YOUTUBE_API_KEY = 'AIzaSyDummyKeyForDemo123456789'; // You'll need to get a real API key
     const API_BASE = 'https://www.googleapis.com/youtube/v3';
 
     // Core Application
@@ -842,26 +843,17 @@
       currentVideoData: null,
       searchQuery: '',
       apiKey: null,
+      playerReady: false,
       
       init() {
         this.bindEvents();
         this.checkFirstVisit();
         this.loadDefaultContent();
-        this.showApiKeyPrompt();
-      },
-
-      showApiKeyPrompt() {
-        // Check if user has saved an API key
+        
+        // Check for saved API key
         const savedKey = localStorage.getItem('youtube_api_key');
         if (savedKey) {
           this.apiKey = savedKey;
-        } else {
-          // Show helpful message
-          setTimeout(() => {
-            if (!this.apiKey) {
-              this.showToast('For full search functionality, add your YouTube API key in console: App.setApiKey("YOUR_KEY")', 10000);
-            }
-          }, 3000);
         }
       },
 
@@ -992,8 +984,7 @@
 
       async searchYouTube(query) {
         if (!this.apiKey) {
-          // Fallback to popular videos if no API key
-          this.showToast('Using default videos. Add API key for real search.', 5000);
+          this.showToast('Add API key for real search. Using defaults...', 3000);
           await this.loadPopularVideos();
           return;
         }
@@ -1013,14 +1004,13 @@
               publishedAt: item.snippet.publishedAt
             }));
             
-            // Get additional details for each video
+            // Get additional details
             const videoIds = videos.map(v => v.id).join(',');
             const detailsResponse = await fetch(
               `${API_BASE}/videos?part=contentDetails,statistics&id=${videoIds}&key=${this.apiKey}`
             );
             const detailsData = await detailsResponse.json();
             
-            // Merge details with videos
             videos.forEach((video, index) => {
               if (detailsData.items[index]) {
                 video.duration = this.formatDuration(detailsData.items[index].contentDetails.duration);
@@ -1030,12 +1020,10 @@
             
             document.getElementById('loading').classList.remove('active');
             this.displayVideos(videos);
-          } else {
-            throw new Error('No results');
           }
         } catch (error) {
           console.error('Search error:', error);
-          this.showToast('Search failed. Using default videos.', 3000);
+          this.showToast('Search failed. Using defaults.', 3000);
           await this.loadPopularVideos();
         }
       },
@@ -1074,7 +1062,6 @@
       },
 
       async loadPopularVideos() {
-        // Fallback popular video IDs
         const popularIds = [
           'dQw4w9WgXcQ', 'jNQXAC9IVRw', 'kJQP7kiw5Fk', '9bZkp7q19f0',
           'OPf0YbXqDm0', 'YQHsXMglC9A', 'CevxZvSJLk8', 'JGwWNGJdvx8',
@@ -1144,29 +1131,34 @@
         
         const cleanVideoId = videoData.id.split('_')[0];
         
-        if (!this.player) {
-          this.player = new YT.Player('youtube-player', {
-            videoId: cleanVideoId,
-            playerVars: {
-              autoplay: 1,
-              controls: 1,
-              modestbranding: 1,
-              rel: 0
-            },
-            events: {
-              'onReady': (event) => {
-                console.log('Player ready');
-                event.target.playVideo();
-              },
-              'onError': (event) => {
-                console.error('Player error:', event.data);
-                this.showToast('Error loading video. Please try another video.');
-              }
-            }
-          });
-        } else {
-          this.player.loadVideoById(cleanVideoId);
+        // Destroy old player and create new one
+        if (this.player) {
+          this.player.destroy();
         }
+        
+        this.player = new YT.Player('youtube-player', {
+          height: '100%',
+          width: '100%',
+          videoId: cleanVideoId,
+          playerVars: {
+            autoplay: 1,
+            controls: 1,
+            modestbranding: 1,
+            rel: 0,
+            fs: 1
+          },
+          events: {
+            'onReady': (event) => {
+              console.log('Player ready, starting playback');
+              event.target.playVideo();
+            },
+            'onError': (event) => {
+              console.error('Player error:', event.data);
+              this.showToast('Error loading video. Try another one.');
+              this.closePlayer();
+            }
+          }
+        });
       },
 
       closePlayer() {
@@ -1182,27 +1174,54 @@
         document.getElementById('downloadVideoTitle').textContent = video.title;
         document.getElementById('downloadVideoChannel').textContent = video.channel;
         
-        const options = this.generateDownloadOptions(video);
+        const videoId = video.id.split('_')[0];
+        
+        // Popular working download services
+        const downloadServices = [
+          { 
+            name: 'SaveFrom.net', 
+            url: `https://en.savefrom.net/#url=https://www.youtube.com/watch?v=${videoId}`,
+            desc: 'Fast & Reliable'
+          },
+          { 
+            name: 'Y2Mate', 
+            url: `https://www.y2mate.com/youtube/${videoId}`,
+            desc: 'Multiple Formats'
+          },
+          { 
+            name: 'SSYouTube', 
+            url: `https://ssyoutube.com/watch?v=${videoId}`,
+            desc: 'Quick Download'
+          },
+          { 
+            name: 'KeepVid', 
+            url: `https://keepvid.pro/en/youtube-downloader?url=https://www.youtube.com/watch?v=${videoId}`,
+            desc: 'HD Quality'
+          },
+          { 
+            name: '9xBuddy', 
+            url: `https://9xbuddy.com/process?url=https://www.youtube.com/watch?v=${videoId}`,
+            desc: 'Easy & Fast'
+          }
+        ];
+        
         const optionsContainer = document.getElementById('downloadOptions');
         optionsContainer.innerHTML = '';
         
-        options.forEach(option => {
-          const optionEl = document.createElement('div');
+        downloadServices.forEach(service => {
+          const optionEl = document.createElement('a');
+          optionEl.href = service.url;
+          optionEl.target = '_blank';
           optionEl.className = 'download-option';
           optionEl.innerHTML = `
             <div class="option-info">
-              <div class="option-quality">${option.quality}</div>
-              <div class="option-details">${option.format} • ${option.fps}</div>
+              <div class="option-quality">${service.name}</div>
+              <div class="option-details">${service.desc}</div>
             </div>
-            <div class="option-size">${option.size}</div>
-            <button class="download-icon-btn">
-              <i class="fa fa-download"></i>
-            </button>
+            <div class="download-icon-btn">
+              <i class="fa fa-external-link"></i>
+            </div>
           `;
-          
-          optionEl.querySelector('.download-icon-btn').addEventListener('click', () => {
-            this.downloadVideo(video, option);
-          });
           
           optionsContainer.appendChild(optionEl);
         });
@@ -1212,33 +1231,6 @@
 
       closeDownloadModal() {
         document.getElementById('downloadModal').classList.remove('active');
-      },
-
-      generateDownloadOptions(video) {
-        return [
-          { quality: '4K • 2160p', format: 'MP4', fps: '60fps', size: '~2.5 GB', value: '2160p60' },
-          { quality: '1440p', format: 'MP4', fps: '60fps', size: '~1.2 GB', value: '1440p60' },
-          { quality: '1080p', format: 'MP4', fps: '60fps', size: '~850 MB', value: '1080p60' },
-          { quality: '1080p', format: 'MP4', fps: '30fps', size: '~500 MB', value: '1080p30' },
-          { quality: '720p', format: 'MP4', fps: '60fps', size: '~450 MB', value: '720p60' },
-          { quality: '720p', format: 'MP4', fps: '30fps', size: '~250 MB', value: '720p30' },
-          { quality: '480p', format: 'MP4', fps: '30fps', size: '~150 MB', value: '480p' },
-          { quality: '360p', format: 'MP4', fps: '30fps', size: '~80 MB', value: '360p' },
-          { quality: 'Audio Only', format: 'MP3', fps: '320kbps', size: '~8 MB', value: 'audio' }
-        ];
-      },
-
-      async downloadVideo(video, option) {
-        this.closeDownloadModal();
-        this.showToast(`Opening download link for: ${video.title.substring(0, 30)}...`);
-        
-        // Use a free download service (y2mate style)
-        const downloadUrl = `https://www.y2mate.com/youtube/${video.id}`;
-        window.open(downloadUrl, '_blank');
-        
-        setTimeout(() => {
-          this.showToast('Redirected to download service. Choose your quality there.', 5000);
-        }, 1000);
       },
 
       showToast(message, duration = 3000) {
@@ -1278,7 +1270,6 @@
       },
 
       switchFeed(feed) {
-        console.log('Switching to feed:', feed);
         document.querySelectorAll('.feed-button').forEach(btn => {
           btn.classList.remove('active');
         });
@@ -1297,7 +1288,6 @@
       async loadFeedContent(feed) {
         document.getElementById('loading').classList.add('active');
         document.getElementById('videoGrid').innerHTML = '';
-
         await this.loadPopularVideos();
       }
     };
@@ -1313,7 +1303,7 @@
       App.init();
     }
 
-    // Make App globally accessible for API key setup
+    // Make App globally accessible
     window.App = App;
   </script>
 </body>
